@@ -1,8 +1,14 @@
-Loading bar për arsye rekreacionale.
+# Loading bar për arsye rekreacionale.
 
-E implementume n'C; pa e përdor `string.h` header file.
+E implementume n'C; pa e varshmëri.
 
-Qysh me ekzekutu?
+<br>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6c6bf889-3185-4410-9d88-c1b4b166b9e6" alt="Demo" width="700" />
+</p>
+<br>
+
+# Qysh me ekzekutu?
 
 Në sistemin tuaj UNIX-based (Linux, MacOS, ...):
 1. Klononi këtë repo:
@@ -19,3 +25,4 @@ Në sistemin tuaj UNIX-based (Linux, MacOS, ...):
   ```bash
   ./loading-bar
   ```
+
