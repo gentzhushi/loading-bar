@@ -1,6 +1,6 @@
 # Loading bar për arsye rekreacionale.
 
-E implementume n'C; pa e varshmëri.
+E implementume n'C; pa varshmëri.
 
 <br>
 <p align="center">
