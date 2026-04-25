@@ -5,12 +5,15 @@
 #include<time.h>
 #include<unistd.h>
 
-char* build_bar(size_t width, size_t breakpoint, char fill, char empty);
+#define FILL    '|'
+#define EMPTY   '.'
 
-int main(void){
+char* build_bar(uint16_t width, uint16_t breakpoint, char fill, char empty);
 
+int main(void)
+{
 	int USE_COLOR = isatty(STDOUT_FILENO);
-	struct timespec ts = { .tv_sec = 0, .tv_nsec = 20L * 1000 * 1000}; // 50ms
+	struct timespec ts = { .tv_sec = 0, .tv_nsec = 50L * 1000 * 1000};
 	struct winsize window;
 
 	if (ioctl(STDOUT_FILENO, TIOCGWINSZ, &window) == -1){
@@ -18,54 +21,41 @@ int main(void){
 		return 1;
 	}
 	
-	int ROWS = window.ws_row;
-	int	COLS = window.ws_col;
+	uint16_t ROWS = window.ws_row;
+	uint16_t COLS = window.ws_col;
 
-	printf("Terminal dimensions are: %dx%d\n", ROWS, COLS);
-	
-	fflush(stdout);
-
-	for (int i = 1; i < COLS-1; i++){
-		char *bar = build_bar((size_t)COLS, (size_t)i, '|', '.');
+    char *bar = NULL;
+	for (int i = 0; i < COLS; i++){
+		bar = build_bar(COLS - 6, i, FILL, EMPTY);
 		
-		printf("%s\r", bar);
+		printf("\r %3d%% %s", 100 * i / (COLS - 1), bar);
 		
-		free(bar);
-
 		nanosleep(&ts, NULL);
 		fflush(stdout);
 	}
 	
-	printf("U KRY BABO!");
-
+    free(bar);
 	return 0;
 }
 
-char* build_bar(size_t width, size_t breakpoint, char fill, char empty){
-	if (breakpoint < 1){
-		printf("Returning null because breakpoint is less than 2. It is %zu.", breakpoint);
-	   	return NULL;
-	}
-
-	if (width < 2){
-		printf("Returning null because width is less than 2. It is %zu.", width);
+char* build_bar(uint16_t width, uint16_t breakpoint, char fill, char empty)
+{
+	if (breakpoint < 1 || width < 2)
 		return NULL;
-	}
 
-	char *string = malloc(width+1); // +1 per EOS
+	char *string = malloc(width+1);
+
 	if (!string){
-		printf("Returning null because !string. It is %s.", string);
+        perror("malloc:");
 		return NULL;
 	}
 
-	string[0] = '[';
+	for (size_t i = 0; i < width; i++)
+		if (i <= breakpoint)
+            string[i] = fill;
+		else
+            string[i] = empty;
 
-	for (size_t i = 1; i < width - 1; i++){
-		if (i <= breakpoint) string[i] = fill;
-		else string[i] = empty;
-	}	
-
-	string[width-1] = ']';
 	string[width] = '\0';
 
 	return string;
